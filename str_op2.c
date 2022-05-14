@@ -25,13 +25,14 @@ char *_strdup(char *str)
 }
 
 /**
- * str_concat - joins to strings
+ * str_concat - joins three strings
  * @s1: string one
  * @s2: string two
+ * @s3: string three
  * Return: pointer to concatenated string
  */
 
-char *str_concat(char *s1, char *s2)
+char *str_concat(char *s1, char *s2, char *s3)
 {
 	int i, j, length;
 	char *res;
@@ -40,9 +41,11 @@ char *str_concat(char *s1, char *s2)
 		s1 = "";
 	if (s2 == NULL)
 		s2 = "";
+	if (s3 == NULL)
+		s3 = "";
 	i = 0;
 	j = 0;
-	length = _strlen(s1) + _strlen(s2) + 1;
+	length = _strlen(s1) + _strlen(s2) + _strlen(s3) + 1;
 	res = (char *)malloc(sizeof(char) * length);
 	if (res == NULL)
 		return (NULL);
@@ -56,6 +59,13 @@ char *str_concat(char *s1, char *s2)
 	while (s2[i])
 	{
 		res[j] = s2[i];
+		j++;
+		i++;
+	}
+	i = 0;
+	while (s3[i])
+	{
+		res[j] = s3[i];
 		j++;
 		i++;
 	}
@@ -136,5 +146,7 @@ int _strncmp(char *s1, char *s2, int n)
 		}
 		return (s1[i] - s2[i]);
 	}
+	if (i < n)
+		return (s1[i] - s2[i]);
 	return (0);
 }

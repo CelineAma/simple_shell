@@ -24,3 +24,25 @@ int check_count(char *str, int i, int *next)
 		*next = 1;
 	return (count);
 }
+
+/**
+ * is_str_num - checks if a string is a number
+ * @str: input string
+ * Return: 1 if string is a number else 0
+ */
+
+int is_str_num(char *str)
+{
+	int i = 0, ret_val = 1;
+
+	if (str[i] && str[i] == '+')
+		i++;
+	while (str[i])
+	{
+		if (isdigit(str[i]))
+			i++;
+		else
+			return (0);
+	}
+	return (ret_val);
+}

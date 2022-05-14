@@ -28,7 +28,7 @@ int _getline(char **buffer, int *len, int fd)
 			continue;
 		}
 		(*len)++;
-*buffer = (void *)_realloc1(*buffer, (*len) - 1, sizeof(char) * ((*len) + 1));
+		*buffer = (void *)_realloc1(*buffer, (*len) - 1, sizeof(char) * ((*len) + 1));
 		if (*buffer == NULL)
 			return (-2);
 		(*buffer)[(*len) - 1] = temp;
@@ -36,9 +36,7 @@ int _getline(char **buffer, int *len, int fd)
 		read_ret = read(fd, &temp, 1);
 	}
 	if (read_ret == 0 && (*len) == 0)
-	{
 		return (EOF);
-	}
 	return (*len);
 }
 
@@ -56,7 +54,7 @@ char **split_line(char *str)
 	while (str[i])
 	{
 		count = check_count(str, i, &next);
-ret_val = _realloc2(ret_val, sizeof(char *) * len, sizeof(char *) * (len + 1));
+		ret_val = _realloc2(ret_val, sizeof(char *) * len, sizeof(char *) * (len + 1));
 		if (ret_val == NULL)
 			return (NULL);
 		ret_val[len] = malloc(sizeof(char) * (count + 1));
@@ -65,14 +63,14 @@ ret_val = _realloc2(ret_val, sizeof(char *) * len, sizeof(char *) * (len + 1));
 			free_double_ptr(ret_val, len);
 			return (NULL);
 		}
-		strncpy(ret_val[len], str + i, count);
+		_strncpy(ret_val[len], str + i, count);
 		ret_val[len++][count] = 0;
 		if ((i + count) >= (int)_strlen(str))
 		{
 			i += count;
 			break;
 		}
-ret_val = _realloc2(ret_val, sizeof(char *) * len, sizeof(char *) * (len + 1));
+		ret_val = _realloc2(ret_val, sizeof(char *) * len, sizeof(char *) * (len + 1));
 		if (ret_val == NULL)
 			return (NULL);
 		ret_val[len] = malloc(sizeof(char) * (next + 1));
@@ -85,7 +83,7 @@ ret_val = _realloc2(ret_val, sizeof(char *) * len, sizeof(char *) * (len + 1));
 		ret_val[len++][next] = 0;
 		i += count + next;
 	}
-ret_val = _realloc2(ret_val, sizeof(char *) * len, sizeof(char *) * (len + 1));
+	ret_val = _realloc2(ret_val, sizeof(char *) * len, sizeof(char *) * (len + 1));
 	if (ret_val == NULL)
 		return (NULL);
 	ret_val[len] = NULL;
@@ -103,6 +101,21 @@ void handle_line(char *buffer)
 	char **split;
 	int i = 0, ret_val, size = 0;
 
+	while (buffer[i])
+	{
+		if (buffer[i] == '#')
+		{
+			buffer[i] = 0;
+			break;
+		}
+		i++;
+	}
+	if (!buffer[0])
+	{
+		free(buffer);
+		return;
+	}
+	i = 0;
 	split = split_line(buffer);
 	free(buffer);
 	if (split == NULL)
@@ -123,7 +136,8 @@ void handle_line(char *buffer)
 			if (i >= size)
 				break;
 			continue;
-		} else if (!_strcmp(split[i], "&&"))
+		}
+		else if (!_strcmp(split[i], "&&"))
 		{
 			if (!ret_val)
 				i++;
@@ -132,12 +146,16 @@ void handle_line(char *buffer)
 			if (i >= size)
 				break;
 			continue;
-		} else if (!_strcmp(split[i], ";"))
+		}
+		else if (!_strcmp(split[i], ";"))
 		{
 			i++;
 			continue;
-		} ret_val = handle_args(split[i++], split);
-	} free_double_ptr(split, size);
+		}
+		ret_val = handle_args(split[i++], split);
+		add_env("?", "3");
+	}
+	free_double_ptr(split, size);
 }
 
 /**
@@ -147,26 +165,66 @@ void handle_line(char *buffer)
  * Return: The exit status of the command
  */
 
-int handle_args(char *args, __attribute__((unused))char **all_args)
+int handle_args(char *args, __attribute__((unused)) char **all_args)
 {
-	char **splited_args;
-	int i = 0;
+	char **splited_args, *temp = NULL;
+	int ret_val = 0;
+	func_t builtin;
 
 	splited_args = _split(args, ' ');
 	if (splited_args == NULL) /* Create error here */
 		return (-2);
-
-	while (splited_args[i])
+	replace_alias(splited_args);
+	if (!splited_args[0])
 	{
-		printf("[%s] ", splited_args[i++]);
+		free_double_ptr2(splited_args);
+		return (1);
 	}
-	printf("\n");
-	free_double_ptr(splited_args, i);
+	replace_envs(splited_args);
+	builtin = get_builtin(splited_args);
+	if (builtin != NULL)
+	{
+		ret_val = builtin(splited_args, all_args);
+		free_double_ptr2(splited_args);
+		return (ret_val);
+	}
+	if (replace_with_path(splited_args, &temp))
+	{
+		dprintf(STDERR_FILENO, "%s: %d: %s: not found\n", name, line_number, splited_args[0]);
+		free_double_ptr2(splited_args);
+		return (1);
+	}
+	ret_val = execute(temp, splited_args, all_args);
+	free(temp);
+	free_double_ptr2(splited_args);
+	return (ret_val);
+}
 
-	/* Check for alias */
-	/* Check for built in commands */
-	/* Check for environmental varibles */
-	/* Check for path */
-	/* Run command */
-	return (0);
+int execute(char *command, char **args, char **all_args)
+{
+	pid_t pid;
+	int ret_val;
+
+	pid = fork();
+   if (pid == -1)
+      return (1);
+	if (pid == 0)
+	{
+		errno = 0;
+		execve(command, args, environ);
+		if(errno == EACCES)
+			dprintf(STDERR_FILENO, "%s: %d: %s: Permission denied\n", name, line_number, command);
+		free(command);
+		free_double_ptr2(args);
+		free_double_ptr2(all_args);
+		free_double_ptr2(environ);
+		free_alias(&aliases);
+		_exit(1);
+	}
+	else
+	{
+		wait(&ret_val);
+		ret_val = WEXITSTATUS(ret_val);
+	}
+	return (ret_val);
 }

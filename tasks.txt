@@ -1,0 +1,8 @@
+create errors
+process file command
+process isatty
+create buffer for _getline
+handle incorrect syntax with "||", "&&", ";"
+hide env ? and $ when printing all envs
+
+
