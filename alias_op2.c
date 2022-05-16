@@ -62,9 +62,9 @@ int is_valid_alias_op(char *arg)
  * Return: 0 if successful else -1
  */
 
-int alias(char **command, __attribute__((unused))char **all_args)
+int alias(char **command, __attribute__((unused)) char **all_args)
 {
-	int ret_val = -1, i = 1, temp;
+	int ret_val, i = 1, temp, error = 0;
 	char *temp_;
 
 	while (command[i])
@@ -81,14 +81,12 @@ int alias(char **command, __attribute__((unused))char **all_args)
 		{
 			temp_ = get_alias(command[i]);
 			if (temp_ != NULL)
-			{
-				printf("%s=\'%s\'\n", command[i], temp_);
-				ret_val = 0;
-			}
+				error = output_alias(command[i], temp_);
 			else
-				dprintf(STDERR_FILENO, "%s: %s not found\n", command[0], command[i]);
+				error = create_alias_error(command[i]);
 		}
 		i++;
 	}
+	ret_val = error ? error : ret_val;
 	return (ret_val);
 }

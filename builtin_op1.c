@@ -12,20 +12,21 @@ func_t get_builtin(char **command)
 {
 	func_t ret_val = NULL;
 	int i = 0;
-	builtin_t builtin[] = { {"env", print_env}, {"setenv", set_env},
-		 {"unsetenv", unset_env}, {"alias", alias}, {"exit", exit_shell},
-		 {"cd", cd},
-		 {NULL, NULL}};
+	builtin_t builtin[] = {{"env", print_env}, {"setenv", set_env},
+	{"unsetenv", unset_env}, {"alias", alias}, {"exit", exit_shell},
+	 {"cd", cd}, {NULL, NULL}};
 
 	while (builtin[i].name)
 	{
-		if (!_strncmp(command[0], builtin[i].name, _strlen(builtin[i].name)) 
-		&& command[0][_strlen(builtin[i].name)] == 0)
+		if (!_strncmp(command[0], builtin[i].name, _strlen(builtin[i].name))
+		 && command[0][_strlen(builtin[i].name)] == 0)
 		{
 			ret_val = builtin[i].func;
 			break;
-		} i++;
-	} return (ret_val);
+		}
+		i++;
+	}
+	return (ret_val);
 }
 
 /**
@@ -37,7 +38,7 @@ func_t get_builtin(char **command)
 
 int exit_shell(char **command, char **all_args)
 {
-	int exit_status = 0;
+	int exit_status = 0, ret_val;
 
 	if (command[1])
 	{
@@ -45,10 +46,17 @@ int exit_shell(char **command, char **all_args)
 			exit_status = atoi(command[1]);
 		else
 		{
-			dprintf(STDERR_FILENO, "%s: %d: %s: Illegal number: %s\n",
-			name, line_number, command[0], command[1]);
-			return (1);
+			ret_val = create_exit_error(command[1]);
+			if (fd > 0 || !isatty(STDIN_FILENO))
+				exit_status = ret_val;
+			else
+				return (ret_val);
 		}
+	}
+	if (fd > 0)
+	{
+		if (close(fd) == -1)
+			return (10);
 	}
 	free_double_ptr2(command);
 	free_double_ptr2(all_args);

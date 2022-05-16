@@ -39,10 +39,25 @@ int is_str_num(char *str)
 		i++;
 	while (str[i])
 	{
-		if (isdigit(str[i]))
+		if (_isdigit(str[i]))
 			i++;
 		else
 			return (0);
 	}
 	return (ret_val);
+}
+
+/**
+ * _isdigit - checks if a character is digit
+ * @c: carrier variable
+ * Return: 1 if true, 0 if false
+ */
+
+int _isdigit(int c)
+{
+	if (c >= '0' && c <= '9')
+		return (1);
+
+	else
+		return (0);
 }

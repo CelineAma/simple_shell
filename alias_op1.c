@@ -65,22 +65,6 @@ void free_alias(alias_t **head)
 	*head = NULL;
 }
 
-/**
- * print_alias - Prints the global alias_t linked list
- * Return: void
- */
-
-void print_alias(void)
-{
-	alias_t *current;
-
-	current = aliases;
-	while (current)
-	{
-		printf("%s %s\n", current->name, current->value);
-		current = current->next;
-	}
-}
 
 /**
  * get_alias - Gets the value of an alias

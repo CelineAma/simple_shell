@@ -66,6 +66,8 @@ int set_env(char **command, __attribute__((unused))char **all_args)
 		i++;
 	if (i  != 3)
 		return (-1);
+	if (!_strcmp(command[1], "?"))
+		return (-1);
 	if (add_env(command[1], command[2]) == NULL)
 		return (-1);
 	else
@@ -92,4 +94,27 @@ int unset_env(char **command, __attribute__((unused))char **all_args)
 	return (-1);
 }
 
+/**
+ * replace_special_envs - handles $$ and $? env replacements
+ * @command: input command
+ */
 
+void replace_special_envs(char **command)
+{
+	int i = 0;
+
+	while (command[i])
+	{
+		if (!_strcmp(command[i], "$$"))
+		{
+			free(command[i]);
+			command[i] = int_to_str(pid);
+		}
+		else if (!_strcmp(command[i], "$?"))
+		{
+			free(command[i]);
+			command[i] = int_to_str(last_exit_status);
+		}
+		i++;
+	}
+}

@@ -64,9 +64,7 @@ void print_all_env(void)
 	int i = 0;
 
 	while (environ[i])
-	{
-		printf("%s\n", environ[i++]);
-	}
+		output_env(environ[i++]);
 }
 
 /**
@@ -102,14 +100,12 @@ char *add_env(char *name, char *value)
 		{
 			free(new_env);
 			return (NULL);
-		}
-		_memcpy(new_environ, environ, size);
+		} _memcpy(new_environ, environ, size);
 		new_environ[size++] = new_env;
 		new_environ[size] = NULL;
 		free(environ);
 		environ = new_environ;
-	}
-	else
+	} else
 	{
 		size = 0;
 		while (environ[size])
@@ -119,11 +115,9 @@ char *add_env(char *name, char *value)
 				free(environ[size]);
 				environ[size] = new_env;
 				break;
-			}
-			size++;
+			} size++;
 		}
-	}
-	return (new_env);
+	} return (new_env);
 }
 
 /**
@@ -135,7 +129,7 @@ char *add_env(char *name, char *value)
 
 void replace_envs(char **command)
 {
-	int i = 0, j, k;
+	int i = 0, j;
 	char *env;
 
 	while (command[i])
@@ -151,7 +145,6 @@ void replace_envs(char **command)
 			else
 			{
 				free(command[i]);
-				// command[i] = _strdup("");
 				j = i + 1;
 				command[i] = command[j];
 				while (command[j])
@@ -159,9 +152,10 @@ void replace_envs(char **command)
 					command[j] = command[j + 1];
 					j++;
 				}
-				
+
 			}
 		}
 		i++;
 	}
 }
+

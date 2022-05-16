@@ -7,7 +7,6 @@
 #include <fcntl.h>
 #include <stdlib.h>
 #include <signal.h>
-#include <ctype.h>
 #include <linux/limits.h>
 #include <sys/stat.h>
 #include <dirent.h>
@@ -60,6 +59,15 @@ alias_t *aliases;
 /* Global file name */
 char *name;
 
+/* Process id */
+pid_t pid;
+
+/* Exit status of last process*/
+int last_exit_status;
+
+/* File descriptor for input file */
+int fd;
+
 /* Linked list for PATH variable */
 
 /* String operations */
@@ -73,11 +81,15 @@ char *_strcat(char *dest, char *src);
 int _strcmp(char *s1, char *s2);
 char *_strcpy(char *dest, char *src);
 int _strncmp(char *s1, char *s2, int n);
+char *int_to_str(int number);
+char **_split2(char *str, char delim);
 
 /* Input operations */
 int _getline(char **buffer, int *size, int fd);
+int _getline2(char **buffer, int *len, int fd);
 char **split_line(char *str);
 void handle_line(char *bufer);
+int handle_comments(char *buffer);
 
 /* Env operations */
 char **init_env(void);
@@ -86,11 +98,11 @@ void print_all_env(void);
 char *add_env(char *name, char *value);
 void replace_envs(char **command);
 int remove_env(char *name);
+void replace_special_envs(char **command);
 
 /* Alias operation */
 alias_t *add_alias(char *name, char *value);
 void free_alias(alias_t **head);
-void print_alias(void);
 char *get_alias(char *name);
 void replace_alias(char **command);
 int remove_alias(char *name);
@@ -122,7 +134,25 @@ int replace_with_path(char **args, char **command);
 /* Helpers */
 int check_count(char *stsr, int i, int *next);
 int is_str_num(char *str);
+int _isdigit(int c);
+int _split_helper(char *str, int i, char delim);
 
 int execute(char *command, char **args, char **all_args);
+
+/* Errors Helpers */
+int create_alias_error(char *alias_name);
+int create_command_error(int err_code, char *command);
+int create_exit_error(char *input);
+int create_cd_error(char *input);
+int create_file_error(char *filename);
+
+/* Output operations */
+int output_alias(char *alias_name, char *alias_value);
+void output_env(char *str);
+
+/* Modes */
+void interactive_mode(void);
+void non_interactive_mode(void);
+int file_mode(char *filename);
 
 #endif /* SHELL */

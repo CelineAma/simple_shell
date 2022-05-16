@@ -12,9 +12,9 @@ int cd_helper(char *command)
 
 	add_env("OLDPWD", get_env("PWD"));
 	if (chdir(command) == -1)
-		return (1);
+		return (2);
 	if (getcwd(buffer, PATH_MAX) == NULL)
-		return (1);
+		return (2);
 	add_env("PWD", buffer);
 	return (0);
 }
@@ -44,11 +44,11 @@ int cd(char **command, __attribute__((unused)) char **all_args)
 			{
 				temp = _strdup(get_env("OLDPWD"));
 				ret_val = cd_helper(temp);
-				printf("%s\n", get_env("PWD"));
+				output_env(get_env("PWD"));
 				free(temp);
-			} else
+			}
+			else
 				ret_val = cd_helper(get_env("HOME"));
-
 		}
 		else
 		{
@@ -56,13 +56,11 @@ int cd(char **command, __attribute__((unused)) char **all_args)
 			if (dir)
 			{
 				ret_val = cd_helper(command[1]);
-				closedir(dir);
-			} else
-			{
-				ret_val = 1;
-				dprintf(STDERR_FILENO, "%s: %d: %s: can't cd to %s\n",
-						  name, line_number, command[0], command[1]);
+				if (closedir(dir) == -1)
+					return (10);
 			}
+			else
+				ret_val = create_cd_error(command[1]);
 		}
 	}
 	return (ret_val);

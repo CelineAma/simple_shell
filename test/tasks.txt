@@ -1,0 +1,12 @@
+create errorsi // done
+process file command // done
+process isatty //done
+create buffer for _getline
+handle incorrect syntax with "||", "&&", ";"
+hide env ? and $ when printing all envs // done
+
+
+error codes
+10 means malloc failed
+5 means read failed
+7 means opening of file failed

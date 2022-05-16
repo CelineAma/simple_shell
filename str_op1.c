@@ -66,78 +66,6 @@ ret_val = _realloc2(ret_val, sizeof(char *) * len, sizeof(char *) * (len + 1));
 	return (ret_val);
 }
 
-/* Test
-int _split_helper(char *str, int i, char delim)
-{
-	int flag = 0, count = 0;
-
-	while (str[i] != delim && str[i] != 0)
-	{
-		if (str[i] == '"' || str[i] == '\'')
-		{
-			flag = str[i];
-			i++;
-			while (str[i] != flag)
-			{
-				i++;
-				count++;
-			}
-			i++;
-			continue;
-		}
-		i++;
-		count++;
-	}
-	return count;
-}
-
-char **_split(char *str, char delim)
-{
-	char **ret_val = NULL;
-	int i = 0, len = 0, count;
-	char *val, flag = 0;
-
-	if (!str)
-		return (ret_val);
-	while (str[i])
-	{
-		if (str[i] == delim)
-		{
-			i++;
-			continue;
-		}
-		count = _split_helper(str, i, delim);
-		val = malloc(sizeof(char) * (count + 1));
-		if (val == NULL)
-			return (NULL);
-		count = 0;
-		while (str[i] != delim && str[i] != 0)
-		{
-			if (str[i] == '"' || str[i] == '\'')
-			{
-				flag = str[i++];
-				while (str[i] != flag)
-					val[count++] = str[i++];
-				i++;
-				continue;
-			}
-			val[count++] = str[i++];
-		}
-		val[count] = 0;
-	ret_val = _realloc2(ret_val, sizeof(char *) * len, sizeof(char *) * (len + 1));
-		if (ret_val == NULL)
-			return (ret_val);
-		ret_val[len++] = val;
-	}
-	if (len > 0)
-	{
-		ret_val = _realloc2(ret_val,sizeof(char *) * len, sizeof(char *) * (len + 1));
-		ret_val[len] = NULL;
-	}
-	return (ret_val);
-}
-End of Test */
-
 /**
  * *_strcpy -  copies the string pointed to by src
  * @dest: char type string
@@ -179,7 +107,8 @@ int _strcmp(char *s1, char *s2)
 		}
 		return (s1[i] - s2[i]);
 	}
-	return (0);
+	/* return value here was 0 */
+	return (s1[i] - s2[i]);
 }
 
 /**
@@ -204,6 +133,7 @@ char *_strcat(char *dest, char *src)
 				i++;
 				j++;
 			}
+			dest[i] = src[j];
 			break;
 		}
 		i++;
