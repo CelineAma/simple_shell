@@ -65,7 +65,10 @@ int set_env(char **command, __attribute__((unused))char **all_args)
 	while (command[i])
 		i++;
 	if (i  != 3)
+	{
+		create_env_error("setenv");
 		return (-1);
+	}
 	if (!_strcmp(command[1], "?"))
 		return (-1);
 	if (add_env(command[1], command[2]) == NULL)
@@ -87,8 +90,11 @@ int unset_env(char **command, __attribute__((unused))char **all_args)
 
 	while (command[i])
 		i++;
-	if (i > 2)
+	if (i != 2)
+	{
+		create_env_error("unsetenv");
 		return (-1);
+	}
 	if (!remove_env(command[1]))
 		return (0);
 	return (-1);

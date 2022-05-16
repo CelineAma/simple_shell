@@ -85,7 +85,10 @@ int create_exit_error(char *input)
 	+ _strlen(message) + _strlen(input) + 10;
 	error = malloc(sizeof(char) * size);
 	if (error == NULL)
+	{
+		free(line);
 		return (2);
+	}
 	error[0] = 0;
 	_strcat(error, name);
 	_strcat(error, ": ");
@@ -119,7 +122,10 @@ int create_cd_error(char *input)
 	+ _strlen(message) + _strlen(input) + 8;
 	error = malloc(sizeof(char) * size);
 	if (error == NULL)
+	{
+		free(line);
 		return (2);
+	}
 	error[0] = 0;
 	_strcat(error, name);
 	_strcat(error, ": ");
@@ -152,7 +158,10 @@ int create_file_error(char *filename)
 	+ _strlen(message) + _strlen(filename) + 6;
 	error = malloc(sizeof(char) * size);
 	if (error == NULL)
+	{
+		free(line);
 		return (127);
+	}
 	error[0] = 0;
 	_strcat(error, name);
 	_strcat(error, ": ");

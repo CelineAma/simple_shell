@@ -145,6 +145,7 @@ int create_command_error(int err_code, char *command);
 int create_exit_error(char *input);
 int create_cd_error(char *input);
 int create_file_error(char *filename);
+int create_env_error(char *command);
 
 /* Output operations */
 int output_alias(char *alias_name, char *alias_value);

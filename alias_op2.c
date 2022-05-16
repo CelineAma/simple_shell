@@ -64,7 +64,7 @@ int is_valid_alias_op(char *arg)
 
 int alias(char **command, __attribute__((unused)) char **all_args)
 {
-	int ret_val, i = 1, temp, error = 0;
+	int ret_val = 0, i = 1, temp, error = 0;
 	char *temp_;
 
 	while (command[i])
