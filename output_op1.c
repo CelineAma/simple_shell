@@ -35,5 +35,5 @@ void output_env(char *env)
 	int len = _strlen(env);
 
 	write(STDOUT_FILENO, env, len);
-	write(STDERR_FILENO, "\n", 1);
+	write(STDOUT_FILENO, "\n", 1);
 }
