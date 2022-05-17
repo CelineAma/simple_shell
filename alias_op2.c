@@ -56,6 +56,26 @@ int is_valid_alias_op(char *arg)
 }
 
 /**
+ * remove_quote - remove quotes from alias value
+ * @input: input string
+ * Return: 1 if it find a quote else 0
+ */
+
+int remove_quote(char *input)
+{
+	int ret = 0, i = 0;
+
+	if (input[i] == '\'')
+		ret = 1;
+	while (input[i])
+	{
+		if (input[i] == '\'')
+			input[i] = 0;
+		i++;
+	}
+	return (ret);
+}
+/**
  * alias - Performs the alias built in operation
  * @command: input command
  * @all_args: pointer to all the remaining args
@@ -64,7 +84,7 @@ int is_valid_alias_op(char *arg)
 
 int alias(char **command, __attribute__((unused)) char **all_args)
 {
-	int ret_val = 0, i = 1, temp, error = 0;
+	int ret_val = 0, i = 1, temp, error = 0, k = 1;
 	char *temp_;
 
 	while (command[i])
@@ -73,7 +93,9 @@ int alias(char **command, __attribute__((unused)) char **all_args)
 		if (temp)
 		{
 			command[i][temp] = 0;
-			if (add_alias(command[i], command[i] + temp + 1) != NULL)
+			if (remove_quote(command[i] + temp + 1))
+				k++;
+			if (add_alias(command[i], command[i] + temp + k) != NULL)
 				ret_val = 0;
 			command[i][temp] = '=';
 		}

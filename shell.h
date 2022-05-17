@@ -136,6 +136,7 @@ int check_count(char *stsr, int i, int *next);
 int is_str_num(char *str);
 int _isdigit(int c);
 int _split_helper(char *str, int i, char delim);
+int remove_quote(char *input);
 
 int execute(char *command, char **args, char **all_args);
 
