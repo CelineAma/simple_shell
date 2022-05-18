@@ -75,6 +75,23 @@ int remove_quote(char *input)
 	}
 	return (ret);
 }
+
+/**
+ * print_all_alias - Handles printing all aliases
+ * @head: Pointer to the head of the alias list
+ */
+
+void print_all_alias(alias_t *head)
+{
+	alias_t *current = head;
+
+	while (current)
+	{
+		output_alias(current->name, current->value);
+		current = current->next;
+	}
+
+}
 /**
  * alias - Performs the alias built in operation
  * @command: input command
@@ -109,6 +126,8 @@ int alias(char **command, __attribute__((unused)) char **all_args)
 		}
 		i++;
 	}
+	if (i == 1)
+		print_all_alias(aliases);
 	ret_val = error ? error : ret_val;
 	return (ret_val);
 }
