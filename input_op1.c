@@ -187,6 +187,7 @@ int handle_args(char *args, __attribute__((unused)) char **all_args)
 	if (splited_args == NULL) /* Create error here */
 		return (-2);
 	replace_alias(splited_args);
+	replace_alias(splited_args);
 	if (!splited_args[0])
 	{
 		free_double_ptr2(splited_args);
