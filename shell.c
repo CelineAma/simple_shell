@@ -21,19 +21,17 @@ void sigint_handler(__attribute__((unused)) int sig_num)
 
 int main(int argc, char *argv[])
 {
-	int ret = 0;
-
 	name = argv[0], environ = init_env(), aliases = NULL, line_number = 0;
 	pid = getpid(), last_exit_status = 0, fd = 0;
 
 	signal(SIGINT, sigint_handler);
 	if (argc > 1)
-		ret = file_mode(argv[1]);
+		last_exit_status = file_mode(argv[1]);
 	else if (!isatty(STDIN_FILENO))
 		non_interactive_mode();
 	else
 		interactive_mode();
 	free_double_ptr2(environ);
 	free_alias(&aliases);
-	return (ret);
+	return (last_exit_status);
 }

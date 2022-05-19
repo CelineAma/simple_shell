@@ -38,7 +38,7 @@ func_t get_builtin(char **command)
 
 int exit_shell(char **command, char **all_args)
 {
-	int exit_status = 0, ret_val;
+	int exit_status = last_exit_status, ret_val;
 
 	if (command[1])
 	{
