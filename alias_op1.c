@@ -110,9 +110,6 @@ void replace_alias(char **command)
 			free(command[i]);
 			command[i] = _strdup(alias);
 		}
-		/* Remove later */
-		if (!_strncmp(command[i], "alias", _strlen("alias")))
-			break;
 		i++;
 	}
 }
