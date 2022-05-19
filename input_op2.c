@@ -21,6 +21,13 @@ int _getline2(char **buffer, int *len, int fd)
 	{
 		if (temp == 10)
 			break;
+		/* Test */
+		if ((*len) > 0 && temp == ' ' && temp == (*buffer)[(*len) - 1])
+		{
+			read_ret = read(fd, &temp, 1);
+			continue;
+		}
+		/* End of test */
 		(*len)++;
 		*buffer = (void *)_realloc1(*buffer, (*len) - 1, sizeof(char)
 		* ((*len) + 1));
