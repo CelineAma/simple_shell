@@ -10,6 +10,8 @@ int cd_helper(char *command)
 {
 	char buffer[PATH_MAX];
 
+	if (command == NULL)
+		return (0);
 	add_env("OLDPWD", get_env("PWD"));
 	if (chdir(command) == -1)
 		return (2);

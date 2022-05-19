@@ -185,7 +185,7 @@ int handle_args(char *args, __attribute__((unused)) char **all_args)
 
 	splited_args = _split(args, ' ');
 	if (splited_args == NULL) /* Create error here */
-		return (-2);
+		return (0);
 	replace_alias(splited_args);
 	replace_alias(splited_args);
 	if (!splited_args[0])

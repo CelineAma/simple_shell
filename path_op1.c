@@ -24,6 +24,8 @@ int replace_with_path(char **args, char **command)
 	else
 	{
 		paths = _split(get_env("PATH"), ':');
+		if (paths == NULL)
+			return (1);
 		while (paths[i])
 		{
 		temp = str_concat(paths[i++], slash, args[0]);

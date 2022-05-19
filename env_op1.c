@@ -136,6 +136,8 @@ void replace_envs(char **command)
 	{
 		if (command[i][0] == '$')
 		{
+			if (_strlen(command[i]) == 1)
+				return;
 			env = get_env(command[i] + 1);
 			if (env != NULL)
 			{
